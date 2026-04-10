@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" width="200" height="50">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0D47A1"/>
+      <stop offset="50%" style="stop-color:#1A73E8"/>
+      <stop offset="100%" style="stop-color:#42A5F5"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon -->
+  <g transform="translate(0, 0)">
+    <!-- U shape -->
+    <path 
+      d="M5 32 L5 18 Q5 5, 18 5 L22 5 Q35 5, 35 18 L35 32" 
+      fill="none" 
+      stroke="url(#logoGrad)" 
+      stroke-width="7" 
+      stroke-linecap="round"
+    />
+    <!-- Arrow -->
+    <path
+      d="M20 38 L20 15 M14 21 L20 15 L26 21"
+      fill="none"
+      stroke="#1A73E8"
+      stroke-width="3"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+  
+  <!-- Text -->
+  <text 
+    x="50" 
+    y="35" 
+    font-family="Inter, sans-serif" 
+    font-weight="700" 
+    font-size="28"
+    fill="#0D47A1"
+    letter-spacing="-0.5"
+  >
+    Upstrive
+  </text>
+</svg>
