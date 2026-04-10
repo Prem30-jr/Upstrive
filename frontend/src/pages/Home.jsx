@@ -105,7 +105,7 @@ const Home = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               className="text-center lg:text-left"
-            >
+            ><br></br>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
                 Launch Your Career with{' '}
                 <span className="text-accent-blue">Real-World</span> Internships

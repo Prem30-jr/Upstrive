@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import FloatingApplyButton from './components/FloatingApplyButton'
@@ -31,13 +33,11 @@ const AnimatedRoutes = () => {
 
 function App() {
   useEffect(() => {
-    import('aos').then(() => {
-      window.AOS.init({
-        duration: 800,
-        easing: 'ease-out-cubic',
-        once: true,
-        offset: 50,
-      })
+    AOS.init({
+      duration: 800,
+      easing: 'ease-out-cubic',
+      once: true,
+      offset: 50,
     })
   }, [])
 

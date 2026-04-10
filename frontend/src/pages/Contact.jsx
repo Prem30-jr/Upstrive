@@ -28,11 +28,24 @@ const Contact = () => {
 
     setIsSubmitting(true)
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to send message')
+      }
+
       toast.success('Message sent successfully!')
       setFormData({ name: '', email: '', subject: '', message: '' })
     } catch (error) {
-      toast.error('Failed to send message. Please try again.')
+      toast.error(error.message || 'Failed to send message. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -45,9 +58,27 @@ const Contact = () => {
       return
     }
 
-    setIsSubscribed(true)
-    toast.success('Subscribed to newsletter!')
-    setNewsletterEmail('')
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/newsletter`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: newsletterEmail }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to subscribe')
+      }
+
+      setIsSubscribed(true)
+      toast.success('Subscribed to newsletter!')
+      setNewsletterEmail('')
+    } catch (error) {
+      toast.error(error.message || 'Failed to subscribe. Please try again.')
+    }
   }
 
   const contactInfo = [

@@ -1,17 +1,28 @@
-# Upstrive Deployment Guide - Render
+# Upstrive Deployment Guide
 
-This guide will help you deploy the Upstrive MERN application on Render.
+Deploy the Upstrive internship platform with **Supabase** + **Render** + **Vercel**.
+
+---
+
+## Architecture
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│                 │     │                 │     │                 │
+│   Vercel       │     │   Render       │     │   Supabase     │
+│   (Frontend)    │────▶│   (Backend)    │────▶│   (Database)   │
+│                 │     │                 │     │                 │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
 
 ---
 
 ## Prerequisites
 
 1. **GitHub Account** with the project pushed
-2. **Render Account** ([render.com](https://render.com))
-3. **MongoDB Atlas** cluster (free tier)
-4. **Gmail App Password** for emails
-5. **Razorpay** account for payments
-6. **Cloudinary** account for file uploads
+2. **Supabase Account** ([supabase.com](https://supabase.com))
+3. **Render Account** ([render.com](https://render.com))
+4. **Vercel Account** ([vercel.com](https://vercel.com))
 
 ---
 
@@ -29,55 +40,56 @@ git push -u origin main
 
 ---
 
-## Step 2: Create MongoDB Atlas Database
+## Step 2: Create Supabase Project
 
-1. Go to [mongodb.com/atlas](https://www.mongodb.com/atlas)
-2. Create free cluster (Shared tier)
-3. Click **Connect** → **Connect your application**
-4. Copy the connection string
-5. Replace `<password>` with your database user password
-
-**Connection String Format:**
-```
-mongodb+srv://username:password@cluster.xxxxx.mongodb.net/upstrive
-```
+1. Go to [supabase.com](https://supabase.com)
+2. Click **New Project**
+3. Fill in:
+   - **Name:** `upstrive`
+   - **Database Password:** Generate a strong password
+   - **Region:** Choose nearest to you
+4. Click **Create new project**
 
 ---
 
-## Step 3: Generate API Key for Retool
+## Step 3: Run Database Schema
+
+1. In Supabase dashboard → **SQL Editor**
+2. Copy the content from `backend/supabase/schema.sql`
+3. Paste and click **Run**
+
+This will create:
+- `internships` table
+- `applications` table
+- `contacts` table
+- `newsletter_subscribers` table
+
+---
+
+## Step 4: Setup Supabase Storage
+
+1. In Supabase dashboard → **Storage**
+2. Create two buckets:
+   - **Name:** `resumes` (for resume uploads)
+   - **Name:** `certificates` (for certificate PDFs)
+3. Set both to **Public**
+
+---
+
+## Step 5: Get Supabase API Keys
+
+1. In Supabase dashboard → **Settings** → **API**
+2. Copy:
+   - **Project URL** → `SUPABASE_URL`
+   - **anon public** key → `SUPABASE_ANON_KEY`
+
+---
+
+## Step 6: Generate Admin API Key
 
 1. Go to [randomkeygen.com](https://randomkeygen.com)
 2. Copy any key from "CodeIgniter Encryption Keys" section
-3. Save this - you'll need it for Retool authentication
-
----
-
-## Step 4: Setup Gmail App Password
-
-1. Go to [myaccount.google.com](https://myaccount.google.com)
-2. Security → 2-Step Verification → Turn ON
-3. Security → App passwords → Generate
-4. Select app: "Mail", Select device: "Other"
-5. Copy the 16-character password
-
----
-
-## Step 5: Get Razorpay Keys
-
-1. Go to [dashboard.razorpay.com](https://dashboard.razorpay.com)
-2. Settings → API Keys
-3. Generate Test/Live keys
-4. Copy `Key ID` and `Key Secret`
-
----
-
-## Step 6: Get Cloudinary Credentials
-
-1. Go to [cloudinary.com/console](https://cloudinary.com/console)
-2. Copy your:
-   - Cloud Name
-   - API Key
-   - API Secret
+3. Save this - you'll need it for admin authentication
 
 ---
 
@@ -98,7 +110,7 @@ mongodb+srv://username:password@cluster.xxxxx.mongodb.net/upstrive
 3. Connect your GitHub repo
 4. Configure:
    - **Name:** `upstrive-api`
-   - **Region:** Singapore (or nearest)
+   - **Region:** Singapore
    - **Root Directory:** `backend`
    - **Build Command:** `npm install`
    - **Start Command:** `npm start`
@@ -108,15 +120,9 @@ mongodb+srv://username:password@cluster.xxxxx.mongodb.net/upstrive
 |-----|-------|
 | `NODE_ENV` | `production` |
 | `PORT` | `5000` |
-| `MONGODB_URI` | Your MongoDB Atlas URI |
+| `SUPABASE_URL` | Your Supabase Project URL |
+| `SUPABASE_ANON_KEY` | Your Supabase Anon Key |
 | `ADMIN_API_KEY` | Your generated API key |
-| `EMAIL_USER` | Your Gmail address |
-| `EMAIL_PASS` | Your Gmail app password |
-| `RAZORPAY_KEY_ID` | Your Razorpay Key ID |
-| `RAZORPAY_KEY_SECRET` | Your Razorpay Key Secret |
-| `CLOUDINARY_CLOUD_NAME` | Your Cloud name |
-| `CLOUDINARY_API_KEY` | Your Cloudinary API key |
-| `CLOUDINARY_API_SECRET` | Your Cloudinary API secret |
 
 6. Click **Create Web Service**
 
@@ -124,72 +130,82 @@ mongodb+srv://username:password@cluster.xxxxx.mongodb.net/upstrive
 
 ---
 
-## Step 8: Deploy Frontend on Render
+## Step 8: Deploy Frontend on Vercel
 
-1. Go to [render.com](https://render.com)
-2. Click **New** → **Static Site**
-3. Connect your GitHub repo
-4. Configure:
-   - **Name:** `upstrive-frontend`
-   - **Region:** Singapore
+1. Go to [vercel.com/new](https://vercel.com/new)
+2. Import your GitHub repo
+3. Configure:
+   - **Framework Preset:** Vite
    - **Root Directory:** `frontend`
-   - **Build Command:** `npm install && npm run build`
-   - **Publish Directory:** `dist`
-5. Add Environment Variables:
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+4. Add Environment Variable:
 
 | Key | Value |
 |-----|-------|
 | `VITE_API_URL` | `https://upstrive-api.onrender.com` |
 
-6. Click **Create Static Site**
-
----
-
-## Step 9: Configure Custom Domain (Optional)
-
-### Backend:
-1. In Render dashboard → Your backend service
-2. Settings → Custom Domains
-3. Add your domain (e.g., `api.upstrive.com`)
-4. Update DNS records as shown
-
-### Frontend:
-1. In Render dashboard → Your frontend site
-2. Settings → Custom Domains
-3. Add your domain (e.g., `www.upstrive.com`)
-4. Update DNS records
-
----
-
-## Step 10: Update Retool
-
-Now you can use your deployed backend URL in Retool:
-
-**Backend URL:**
-```
-https://upstrive-api.onrender.com
-```
-
-**Headers:**
-```
-x-api-key: your-admin-api-key
-Content-Type: application/json
-```
+5. Click **Deploy**
 
 ---
 
 ## API Endpoints Reference
 
+### Public Routes (No Auth Required)
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/admin` | List all applications |
-| `GET` | `/api/admin/:id` | Get single application |
-| `PATCH` | `/api/admin/:id/status` | Update status |
-| `GET` | `/api/admin/stats/summary` | Dashboard stats |
-| `POST` | `/api/email/send-email` | Send email |
-| `POST` | `/api/payment/create` | Create payment |
-| `POST` | `/api/payment/verify` | Verify payment |
-| `POST` | `/api/certificate/generate` | Generate certificate |
+| `GET` | `/api/internships` | List all active internships |
+| `GET` | `/api/internships/:id` | Get single internship |
+| `POST` | `/api/applications` | Submit application |
+| `POST` | `/api/contact` | Submit contact message |
+| `POST` | `/api/newsletter` | Subscribe to newsletter |
+| `GET` | `/api/certificates/verify/:id` | Verify certificate |
+
+### Admin Routes (Auth Required)
+
+Add header: `x-api-key: your-admin-api-key`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/admin/applications` | List all applications |
+| `GET` | `/api/admin/applications/:id` | Get single application |
+| `PATCH` | `/api/admin/applications/:id/status` | Update status |
+| `DELETE` | `/api/admin/applications/:id` | Delete application |
+| `GET` | `/api/admin/stats` | Dashboard stats |
+| `POST` | `/api/admin/certificates/generate` | Generate certificate |
+| `POST` | `/api/admin/emails/send` | Send email |
+
+---
+
+## Database Tables
+
+### internships
+| Column | Type | Description |
+|--------|------|-------------|
+| id | UUID | Primary key |
+| title | VARCHAR | Internship title |
+| domain | VARCHAR | Domain category |
+| duration | TEXT[] | Available durations |
+| stipend | VARCHAR | Stipend range |
+| skills_required | TEXT[] | Required skills |
+| is_active | BOOLEAN | Active status |
+
+### applications
+| Column | Type | Description |
+|--------|------|-------------|
+| id | UUID | Primary key |
+| full_name | VARCHAR | Student name |
+| email | VARCHAR | Student email |
+| phone | VARCHAR | Phone number |
+| program | VARCHAR | Selected program |
+| duration | VARCHAR | Selected duration |
+| college | VARCHAR | College name |
+| graduation_year | INTEGER | Graduation year |
+| motivation | TEXT | Motivation letter |
+| status | VARCHAR | Application status |
+| certificate_url | TEXT | Certificate link |
+| applied_at | TIMESTAMP | Application date |
 
 ---
 
@@ -198,41 +214,42 @@ Content-Type: application/json
 ### Backend not starting?
 - Check logs in Render dashboard
 - Verify all environment variables are set
-- Check MongoDB URI is correct
+- Check Supabase URL and keys are correct
 
 ### Frontend API calls failing?
-- Verify `VITE_API_URL` points to your backend
+- Verify `VITE_API_URL` points to your Render backend
 - Check CORS settings in backend
 
-### Emails not sending?
-- Verify Gmail app password is correct
-- Make sure 2FA is enabled on Google account
-
-### Payment verification failing?
-- Verify Razorpay keys are correct
-- Check signature generation matches
-
----
-
-## Free Tier Limits
-
-| Service | Limit |
-|---------|-------|
-| Render Web Service | 750 hours/month |
-| Render Static Site | 100GB bandwidth/month |
-| MongoDB Atlas | 512MB storage |
-| Cloudinary | 25 credits |
+### Storage upload failing?
+- Verify storage buckets are set to Public
+- Check RLS policies in Supabase
 
 ---
 
 ## URLs Format
 
-After deployment, you'll have:
+After deployment:
 
-- **Frontend:** `https://upstrive-frontend.onrender.com`
+- **Frontend:** `https://your-frontend.vercel.app`
 - **Backend API:** `https://upstrive-api.onrender.com`
 - **Health Check:** `https://upstrive-api.onrender.com/api/health`
 
 ---
 
-**Need help?** Check Render docs: https://render.com/docs
+## Environment Variables Summary
+
+### Backend (Render)
+```
+SUPABASE_URL = https://xxxxx.supabase.co
+SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIs...
+ADMIN_API_KEY = your-secret-key
+```
+
+### Frontend (Vercel)
+```
+VITE_API_URL = https://upstrive-api.onrender.com
+```
+
+---
+
+**Need help?** Check Supabase docs: https://supabase.com/docs

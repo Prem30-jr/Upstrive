@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FiUser, FiMail, FiPhone, FiMapPin, FiFileText, FiSend, FiCheckCircle, FiAlertCircle } from 'react-icons/fi'
+import { FiUser, FiMail, FiPhone, FiMapPin, FiFileText, FiSend, FiCheckCircle, FiAlertCircle, FiUpload } from 'react-icons/fi'
 import toast, { Toaster } from 'react-hot-toast'
 
 const Apply = () => {
@@ -17,12 +17,14 @@ const Apply = () => {
     college: '',
     graduationYear: '',
     motivation: '',
-    resume: null
   })
 
+  const [resumeFile, setResumeFile] = useState(null)
+  const [resumePreview, setResumePreview] = useState(null)
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
 
   const programs = [
     'AI & Machine Learning',
@@ -77,15 +79,58 @@ const Apply = () => {
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         setErrors({ ...errors, resume: 'File size must be less than 5MB' })
+        setResumeFile(null)
+        setResumePreview(null)
         return
       }
       if (!['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type)) {
         setErrors({ ...errors, resume: 'Only PDF and DOC files are allowed' })
+        setResumeFile(null)
+        setResumePreview(null)
         return
       }
-      setFormData({ ...formData, resume: file })
+      setResumeFile(file)
+      setResumePreview(file.name)
       setErrors({ ...errors, resume: '' })
     }
+  }
+
+  const uploadResume = async (file) => {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    
+    const reader = new FileReader()
+    
+    return new Promise((resolve, reject) => {
+      reader.onload = async () => {
+        try {
+          const base64 = reader.result.split(',')[1]
+          
+          const response = await fetch(`${API_URL}/api/upload/resume`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              fileBase64: base64,
+              fileName: file.name,
+              mimeType: file.type
+            })
+          })
+          
+          const data = await response.json()
+          
+          if (!response.ok) {
+            throw new Error(data.message || 'Failed to upload resume')
+          }
+          
+          resolve(data.url)
+        } catch (error) {
+          reject(error)
+        }
+      }
+      reader.onerror = () => reject(new Error('Failed to read file'))
+      reader.readAsDataURL(file)
+    })
   }
 
   const handleSubmit = async (e) => {
@@ -93,28 +138,66 @@ const Apply = () => {
     
     const newErrors = {}
     Object.keys(formData).forEach(key => {
-      if (key !== 'resume') {
-        const error = validateField(key, formData[key])
-        if (error) newErrors[key] = error
-      }
+      const error = validateField(key, formData[key])
+      if (error) newErrors[key] = error
     })
+
+    if (!resumeFile) {
+      newErrors.resume = 'Resume is required'
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
-      toast.error('Please fix the errors in the form')
+      toast.error('Please fill in all required fields')
       return
     }
 
     setIsSubmitting(true)
+    setIsUploading(true)
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+      
+      toast.loading('Uploading resume...', { id: 'upload' })
+      const resumeUrl = await uploadResume(resumeFile)
+      toast.success('Resume uploaded!', { id: 'upload' })
+      setIsUploading(false)
+      
+      toast.loading('Submitting application...', { id: 'submit' })
+      
+      const response = await fetch(`${API_URL}/api/applications`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          program: formData.program,
+          duration: formData.duration,
+          college: formData.college,
+          graduationYear: formData.graduationYear,
+          motivation: formData.motivation,
+          resumeUrl: resumeUrl
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to submit application')
+      }
+
+      toast.success('Application submitted successfully!', { id: 'submit' })
       setShowSuccess(true)
-      toast.success('Application submitted successfully!')
     } catch (error) {
-      toast.error('Failed to submit application. Please try again.')
+      toast.dismiss('upload')
+      toast.dismiss('submit')
+      toast.error(error.message || 'Failed to submit application. Please try again.')
     } finally {
       setIsSubmitting(false)
+      setIsUploading(false)
     }
   }
 
@@ -425,19 +508,48 @@ const Apply = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-text-dark mb-2">
-                  Upload Resume
+                  Upload Resume *
+                  <span className="text-red-500 ml-1">(Required)</span>
                   <span className="text-text-muted font-normal ml-2">
                     (PDF/DOC, max 5MB)
                   </span>
                 </label>
-                <div className="relative">
-                  <FiFileText className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-muted" />
-                  <input
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    onChange={handleFileChange}
-                    className="w-full pl-12 pr-4 py-3 border border-border-color rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-deep-blue file:transition-colors"
-                  />
+                <div className={`relative border-2 border-dashed rounded-xl p-6 transition-all ${
+                  errors.resume ? 'border-red-500 bg-red-50' : 
+                  resumeFile ? 'border-green-500 bg-green-50' : 
+                  'border-border-color hover:border-primary'
+                }`}>
+                  <div className="flex flex-col items-center justify-center relative z-10">
+                    {resumeFile ? (
+                      <div className="text-center">
+                        <FiCheckCircle className="w-12 h-12 text-green-500 mx-auto mb-2" />
+                        <p className="font-medium text-text-dark">{resumePreview}</p>
+                        <p className="text-sm text-green-600 mt-1">Resume uploaded</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setResumeFile(null)
+                            setResumePreview(null)
+                          }}
+                          className="text-sm text-red-500 mt-2 hover:underline"
+                        >
+                          Remove and upload different file
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <FiUpload className="w-12 h-12 text-text-muted mb-3" />
+                        <p className="text-text-muted mb-2">Click to upload or drag and drop</p>
+                        <p className="text-xs text-text-muted">PDF or DOC up to 5MB</p>
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          onChange={handleFileChange}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                        />
+                      </>
+                    )}
+                  </div>
                 </div>
                 {errors.resume && (
                   <p className="text-red-500 text-sm mt-1 flex items-center">
@@ -459,7 +571,7 @@ const Apply = () => {
                 {isSubmitting ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Submitting...</span>
+                    <span>{isUploading ? 'Uploading Resume...' : 'Submitting...'}</span>
                   </>
                 ) : (
                   <>
