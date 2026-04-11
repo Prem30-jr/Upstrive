@@ -274,7 +274,7 @@ const Contact = () => {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-primary to-deep-blue rounded-2xl p-6 text-white">
+              {/* <div className="bg-gradient-to-br from-primary to-deep-blue rounded-2xl p-6 text-white">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
                   <FiMapPin className="w-6 h-6" />
                 </div>
@@ -289,7 +289,7 @@ const Contact = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-              </div>
+              </div> */}
             </motion.div>
           </div>
         </div>

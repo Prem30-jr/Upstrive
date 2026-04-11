@@ -41,7 +41,7 @@ const About = () => {
   ]
 
   const stats = [
-    { number: '2020', label: 'Founded' },
+    { number: '2024', label: 'Founded' },
     { number: 'Noida', label: 'HQ Location' },
     { number: '500+', label: 'Students Served' }
   ]
