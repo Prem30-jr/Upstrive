@@ -168,7 +168,7 @@ const Internships = () => {
   const journeySteps = [
     { step: 1, title: 'Apply', description: 'Submit your application' },
     { step: 2, title: 'Shortlist + Interview', description: 'Review & assessment' },
-    { step: 3, title: 'Onboarding', description: 'Welcome to Upstrive' },
+    { step: 3, title: 'Onboarding', description: 'Welcome to Clarix' },
     { step: 4, title: 'Project Work', description: 'Real-world experience' },
     { step: 5, title: 'Certificate + Placement', description: 'Launch your career' }
   ]

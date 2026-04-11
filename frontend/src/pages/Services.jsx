@@ -72,7 +72,7 @@ const Services = () => {
               <span className="text-accent-blue">Launch Your Career</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Upstrive isn't just an internship. It's a complete career launchpad — 
+              Clarix isn't just an internship. It's a complete career launchpad — 
               from skill-building to placement support.
             </p>
           </motion.div>
@@ -137,7 +137,7 @@ const Services = () => {
                 Ready to Start Your Journey?
               </h2>
               <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
-                Join hundreds of students who have transformed their careers with Upstrive internships.
+                Join hundreds of students who have transformed their careers with Clarix internships.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link

@@ -40,8 +40,8 @@ const Footer = () => {
             viewport={{ once: true }}
           >
             <div className="flex items-center space-x-3 mb-4">
-              <img src="/logo.svg" alt="Upstrive Logo" className="w-12 h-12" />
-              <span className="text-2xl font-bold">Upstrive</span>
+              <img src="/logo.svg" alt="Clarix Logo" className="w-12 h-12" />
+              <span className="text-2xl font-bold">Clarix</span>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed mb-6">
               Launch your career with structured, company-owned internships. 
@@ -119,8 +119,8 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-3">
                 <FiMail className="w-5 h-5 text-accent-blue" />
-                <a href="mailto:hello@upstrive.com" className="text-gray-300 hover:text-white transition-colors">
-                  hello@upstrive.com
+                <a href="mailto:hello@clarix.com" className="text-gray-300 hover:text-white transition-colors">
+                  hello@clarix.com
                 </a>
               </li>
               <li className="flex items-center space-x-3">
@@ -136,7 +136,7 @@ const Footer = () => {
         <div className="border-t border-white/10 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              &copy; {currentYear} Upstrive. All rights reserved.
+              &copy; {currentYear} Clarix. All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">

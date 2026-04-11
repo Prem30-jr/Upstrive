@@ -65,7 +65,7 @@ const About = () => {
                 Who We Are
               </h1>
               <p className="text-text-muted text-lg mb-6 leading-relaxed">
-                Upstrive was founded with one mission — to make high-quality, structured 
+                Clarix was founded with one mission — to make high-quality, structured 
                 internships accessible to every student, regardless of their college or city.
               </p>
               <p className="text-text-muted text-lg mb-8 leading-relaxed">
@@ -170,7 +170,7 @@ const About = () => {
               Our Core Values
             </h2>
             <p className="text-text-muted text-lg max-w-2xl mx-auto">
-              The principles that guide everything we do at Upstrive
+              The principles that guide everything we do at Clarix
             </p>
           </motion.div>
 
