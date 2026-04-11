@@ -40,7 +40,7 @@ const Footer = () => {
             viewport={{ once: true }}
           >
             <div className="flex items-center space-x-3 mb-4">
-              <img src="/Herrico-logo.png" alt="Herrico Logo" className="h-12 w-auto" />
+              <img src="/Herrico-logo.png" alt="Herrico Logo" className="h-10 w-auto" />
               <span className="text-2xl font-bold">Herrico</span>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed mb-6">
