@@ -217,7 +217,7 @@ const Apply = () => {
               Application Submitted!
             </h2>
             <p className="text-base text-text-muted leading-relaxed mb-8 max-w-lg mx-auto">
-              Thank you for applying to Clarix. We've received your application and will 
+              Thank you for applying to Herrico. We've received your application and will 
               review it shortly. Here's what happens next:
             </p>
             <div className="space-y-4 text-left mb-8">

@@ -92,7 +92,7 @@ const Contact = () => {
     {
       icon: FiMail,
       title: 'Email Us',
-      details: ['hello@clarix.com', 'support@clarix.com'],
+      details: ['herrico.official@gmail.com', 'support@herrico.com'],
       color: 'text-blue-500',
       bgColor: 'bg-blue-100'
     },

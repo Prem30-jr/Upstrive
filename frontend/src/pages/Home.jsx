@@ -111,7 +111,7 @@ const Home = () => {
                 <span className="text-accent-blue">Real-World</span> Internships
               </h1>
               <p className="text-lg sm:text-xl text-gray-200 mb-8 max-w-xl mx-auto lg:mx-0">
-                Clarix connects ambitious students with structured, company-owned 
+                Herrico connects ambitious students with structured, company-owned 
                 internship programs in the most in-demand tech domains.
               </p>
 
@@ -229,7 +229,7 @@ const Home = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold text-deep-blue mb-4">
-              Why Choose Clarix?
+              Why Choose Herrico?
             </h2>
             <p className="text-text-muted text-lg max-w-2xl mx-auto">
               We provide everything you need to launch a successful tech career
@@ -273,7 +273,7 @@ const Home = () => {
               Ready to kickstart your career?
             </h2>
             <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
-              Join 500+ students who chose Clarix to launch their professional journey
+              Join 500+ students who chose Herrico to launch their professional journey
             </p>
             <Link to="/apply" className="inline-flex items-center space-x-2 bg-white text-primary font-semibold py-4 px-8 rounded-full hover:bg-gray-100 transition-colors">
               <span>Get Started Today</span>
